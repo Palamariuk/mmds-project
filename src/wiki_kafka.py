@@ -1,19 +1,16 @@
 import json
-import socket
-
+from kafka import KafkaProducer
 from sseclient import SSEClient as EventSource
 
 from configs import *
 
 
-# Function to stream data to a socket
-def stream_to_socket():
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((SOCKET_HOST, SOCKET_PORT))
-    server_socket.listen(1)
-    print(f"Server started at {SOCKET_HOST}:{SOCKET_PORT}, waiting for client...")
-    client_socket, addr = server_socket.accept()
-    print(f"Connection from {addr} established.")
+# Function to stream data to a Kafka topic
+def stream_to_kafka():
+    producer = KafkaProducer(
+        bootstrap_servers=KAFKA_BROKER,
+        value_serializer=lambda v: json.dumps(v).encode('utf-8')
+    )
 
     try:
         for event in EventSource(STREAM_URL):
@@ -31,20 +28,18 @@ def stream_to_socket():
                         "change": change.get("length", {}).get("new", 0) - change.get("length", {}).get("old", 0),
                         "comment": change.get("comment"),
                     }
-                    # Send serialized JSON over the socket
-                    client_socket.send((json.dumps(event_data) + "\n").encode('utf-8'))
-                    print(event_data)
+                    # Send the event data to the Kafka topic
+                    producer.send(KAFKA_TOPIC, event_data)
+                    print(f"Sent to Kafka: {event_data}")
 
             except json.JSONDecodeError:
                 continue
     except Exception as e:
         print(f"Error: {e}")
     finally:
-        client_socket.close()
-        server_socket.close()
+        producer.close()
 
 
-# Run the script in two threads
+# Run the script
 if __name__ == "__main__":
-    # Start the socket server in a separate thread
-    stream_to_socket()
+    stream_to_kafka()
