@@ -7,6 +7,8 @@ This project implements a real-time data pipeline for reading and analyzing Wiki
 
 ## Project Overview
 
+![telegram-cloud-photo-size-2-5325669386327026059-y](https://github.com/user-attachments/assets/23d3ab54-8a79-4b82-8ba0-6b067405fa4e)
+
 ### Key Components
 1. **Wikipedia API Integration**: 
    - Fetches and processes Wikipedia edit events in real-time.
