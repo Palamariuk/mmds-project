@@ -1,7 +1,7 @@
 
-# Wiki Article Analysis Pipeline
+# Wiki Article Analysis Pipeline: Bot Detection
 
-This project implements a real-time data pipeline for reading and analyzing Wikipedia articles using the Wikipedia API, Kafka, and Apache Spark. The analysis incorporates a **Bloom filter** to efficiently track and query whether articles have been processed.
+This project implements a real-time data pipeline for reading and analyzing Wikipedia articles using the Wikipedia API, Kafka, and Apache Spark. A **Bloom filter** is employed to identify whether an edit was made by a bot or a human contributor efficiently and in real-time.
 
 ---
 
@@ -18,31 +18,11 @@ This project implements a real-time data pipeline for reading and analyzing Wiki
 
 3. **Spark Consumer**:
    - Consumes data from Kafka.
-   - Applies a **Bloom filter** to analyze and deduplicate articles efficiently.
+   - Applies a **Bloom filter** to classify whether an edit was made by a bot or a human contributor.
 
 4. **Bloom Filter**:
    - A probabilistic data structure used to check if an article has already been processed.
    - Ensures memory-efficient deduplication with minimal false positives.
-
----
-
-## Workflow
-
-1. **Wikipedia Producer**:
-   - Connects to the Wikipedia API.
-   - Reads the latest articles or edits in real time.
-   - Pushes the data to Kafka on a specific topic (e.g., `wiki-articles`).
-
-2. **Kafka Broker**:
-   - Acts as the intermediary for the producer and consumer.
-   - Handles article streams.
-
-3. **Spark Consumer**:
-   - Reads article data from Kafka.
-   - Utilizes a Bloom filter to:
-     - Detect duplicate articles.
-     - Analyze article metadata (e.g., edit patterns, contributors, article categories).
-   - Outputs the results of the analysis (e.g., logs, dashboards, or another Kafka topic).
 
 ---
 
