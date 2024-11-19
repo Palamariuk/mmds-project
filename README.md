@@ -1,7 +1,7 @@
 
-# Wiki Article Analysis Pipeline: Bot Detection
+# Wiki Edit Events Analysis Pipeline: Bot Detection
 
-This project implements a real-time data pipeline for reading and analyzing Wikipedia articles using the Wikipedia API, Kafka, and Apache Spark. A **Bloom filter** is employed to identify whether an edit was made by a bot or a human contributor efficiently and in real-time.
+This project implements a real-time data pipeline for reading and analyzing Wikipedia edit events using the Wikipedia API, Kafka, and Apache Spark. A **Bloom filter** is employed to identify whether an edit was made by a bot or a human contributor efficiently and in real-time.
 
 ---
 
@@ -9,19 +9,19 @@ This project implements a real-time data pipeline for reading and analyzing Wiki
 
 ### Key Components
 1. **Wikipedia API Integration**: 
-   - Fetches and processes Wikipedia articles in real-time.
+   - Fetches and processes Wikipedia edit events in real-time.
    - Acts as the **producer**, sending data to Kafka.
 
 2. **Kafka**:
    - Serves as the message broker for handling real-time data streams.
-   - Receives article data from the producer and makes it available to consumers.
+   - Receives edit event data from the producer and makes it available to consumers.
 
 3. **Spark Consumer**:
    - Consumes data from Kafka.
    - Applies a **Bloom filter** to classify whether an edit was made by a bot or a human contributor.
 
 4. **Bloom Filter**:
-   - A probabilistic data structure used to check if an article has already been processed.
+   - A probabilistic data structure used to check if an edit event has already been processed.
    - Ensures memory-efficient deduplication with minimal false positives.
 
 ---
