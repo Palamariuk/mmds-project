@@ -21,47 +21,19 @@ services:
     ports:
       - "9092:9092"
 
-  spark-master:
-    image: bitnami/spark:3.5.3
-    ports:
-      - "8080:8080"
-      - "7077:7077"
-    environment:
-      - SPARK_MODE=master
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-
-  spark-worker:
-    image: bitnami/spark:3.5.3
-    depends_on:
-      - spark-master
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=1G
-      - SPARK_WORKER_CORES=1
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-    deploy:
-      replicas: 1
-
-  jupyter:
-    image: jupyter/pyspark-notebook:lab-3.5.3
+  pyspark-notebook:
+    image: jupyter/pyspark-notebook:spark-3.2.1
     ports:
       - "8888:8888"
     environment:
       - JUPYTER_ENABLE_LAB=yes
       # Configure Spark to use the cluster
-      - SPARK_OPTS="--conf spark.jars.packages=org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3 --conf spark.kafka.consumer.fetch.max.bytes=1000000 --conf spark.kafka.max.partition.fetch.bytes=1000000"
+      - SPARK_OPTS=--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1
     volumes:
-      - jupyter_data:/home/jovyan/work
+      - .:/home/jovyan/work
     command: start.sh jupyter lab --NotebookApp.token='' --NotebookApp.password=''
     depends_on:
-      - spark-master
+      - kafka
 
 volumes:
   jupyter_data:
